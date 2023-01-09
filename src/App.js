@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     window.addEventListener("keyup", handleKeyUp);
     return () => window.removeEventListener("keyup", handleKeyUp);
-  }, []);
+  });
 
   const [isLoading, setLoading] = useState(false);
   const [jokeType, setType] = useState("");
@@ -53,8 +53,9 @@ const App = () => {
         <Loader />
       ) : (
         <div>
+          <h1>Press button 👇 or "j" to hear a joke 😆</h1>
           <button
-            className="btn btn-primary p-3"
+            className="btn btn-primary p-3 mt-5"
             onClick={() => {
               if (synthesis.speaking) synthesis.cancel();
               handleClick();
