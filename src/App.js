@@ -1,25 +1,77 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import bot from "./assets/bot.gif";
+import { fetchApi } from "./api/api.js";
+import Loader from "./components/Loader/Loader";
+import Content from "./components/Content";
 
-function App() {
+const App = () => {
+  const synthesis = window.speechSynthesis;
+
+  useEffect(() => {
+    window.addEventListener("keyup", handleKeyUp);
+    return () => window.removeEventListener("keyup", handleKeyUp);
+  }, []);
+
+  const [isLoading, setLoading] = useState(false);
+  const [jokeType, setType] = useState("");
+  const [jokeSetup, setSetup] = useState("");
+  const [jokePunchline, setPunchline] = useState("");
+
+  const handleKeyUp = (e) => {
+    const { key } = e;
+    if (key === "j" || key === "J") handleClick();
+  };
+
+  const handleClick = async () => {
+    setLoading(true);
+    const {
+      data: [{ type, setup, punchline }],
+    } = await fetchApi();
+
+    setType(type);
+    setSetup(setup);
+    setPunchline(punchline);
+    setLoading(false);
+
+    const textSpeech = (words) => {
+      const wordSaid = new SpeechSynthesisUtterance(words);
+      synthesis.speak(wordSaid);
+    };
+
+    textSpeech(setup);
+    textSpeech(punchline);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container text-center">
+      <div className="row">
+        <div className="col-md-6 offset-md-3 col-sm-8 offset-sm-2">
+          <img src={bot} alt="bot" />
+        </div>
+      </div>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div>
+          <button
+            className="btn btn-primary p-3"
+            onClick={() => {
+              if (synthesis.speaking) synthesis.cancel();
+              handleClick();
+            }}
+          >
+            TELL ME A JOKE 😃
+          </button>
+
+          <Content
+            jokeType={jokeType}
+            jokeSetup={jokeSetup}
+            jokePunchline={jokePunchline}
+          />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
