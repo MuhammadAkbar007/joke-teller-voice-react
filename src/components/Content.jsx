@@ -1,10 +1,10 @@
 import React from "react";
 
-const Content = ({jokeType, jokeSetup, jokePunchline}) => {
+const Content = ({ jokeType, jokeSetup, jokePunchline }) => {
   return (
     <div>
       {jokeType && (
-        <div className="row mt-5">
+        <div className="row my-5">
           <div className="col-md-6 offset-md-3 col-sm-8 offset-sm-2">
             <div className="card shadow">
               <div className="card-header bg-primary text-white">
